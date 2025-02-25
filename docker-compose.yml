@@ -1,0 +1,29 @@
+version: "3.8"
+
+services:
+  mlflow-ui:
+    build:
+      context: .
+      dockerfile: ui-dockerfile
+    container_name: mlflow-ui
+    ports:
+      - "8000:8000"
+    environment:
+      MLFLOW_TRACKING_URI: "mysql+pymysql://root:root@host.docker.internal:3306/mlflow"
+    command: mlflow server --backend-store-uri mysql+pymysql://root:root@host.docker.internal:3306/mlflow --host 0.0.0.0 --port 8000
+    restart: always
+
+  mlflow-pipeline:
+    build:
+      context: .
+      dockerfile: pipeline-dockerfile
+    container_name: mlflow-pipeline
+    depends_on:
+      - mlflow-ui
+    ports:
+      - "5000:5000"
+    environment:
+      MLFLOW_TRACKING_URI: "mysql+pymysql://root:root@host.docker.internal:3306/mlflow"
+    command: >
+      sh -c "python _code.py && mlflow models serve -m runs:/$(head -1 ./logs.txt)/random_forrest_model --host 0.0.0.0 --no-conda"
+    restart: always
