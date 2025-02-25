@@ -14,7 +14,7 @@ RUN apt-get update && apt-get install -y \
     gfortran \
     libopenblas-dev
 
-RUN pip install mlflow pymysql scikit-learn pandas
+RUN pip install mlflow pymysql scikit-learn pandas cryptography
 
 COPY ./_code.py /app
 COPY ./diabetes-dev.csv /app

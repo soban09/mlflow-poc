@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     stages {
-        stage('Build and run the kedro docker container'){
+        stage('Build and run the mlflow docker containers'){
             steps{
                 script{
                     bat 'docker compose up --build -d'
